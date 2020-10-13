@@ -2,6 +2,7 @@ class User{
 
     constructor (name, gender, birth, country, email, password, photo, admin){
 
+        this._id;
         this._name = name;
         this._gender = gender;
         this._birth = birth;
@@ -13,7 +14,9 @@ class User{
         this._register = new Date();
 
     }
-
+    get id(){
+        return this._id;
+    }
     get name(){
         return this._name;
     }
@@ -59,5 +62,40 @@ class User{
             
         }
     }
+    static getUsersStorage(){
+        let users = [];
 
+        if(localStorage.getItem("users")){
+            users = JSON.parse(localStorage.getItem("users"));
+        }
+        return users;
+    }
+
+    getNewId(){
+        if(!window.id) window.id = 0;
+
+        id++;
+
+        return id;
+    }
+    save(){
+        let users = User.getUsersStorage();
+
+        if(this.id > 0){
+            users.map(u=>{
+
+                if(u._id == this.id){
+                    Object.assign(u, this);
+                }
+                return u;
+            });
+        }else{
+            this._id = this.getNewId();
+
+            users.push(this);
+            
+        }
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+    
 }
